@@ -1,0 +1,332 @@
+--BÁSICO-- by Luca
+	C++ tem tudo o que a linguagem C tem e mais, qualquer programa em C será executado normalmente em um compilador de C++. 
+	(Portanto, podemos criar funcoes comuns: sem pertencer a uma classe) Porém, se optamos por C++ ao invés de C, 
+	faremos os programas usando classes.
+
+	Outros:
+	 - a função main: deve existir uma função fora de todas as classes, essa é a função main (biblioteca: <iostream.h>)
+	ps: ela deve ficar num arquivo diferente
+    (OBS (eduardo): 
+        1) desde C++98, a biblioteca <iostream.h> chama-se <iostream)
+        2) a função main *não* fica na biblioteca <iostream>
+        3) a existência da função main não é necessária
+        4) não necessariamente main deve ficar em um arquivo diferente, porém, é uma boa prática
+    )
+
+	 - no include, quando for incluir uma biblioteca da linguagem usa-se <biblioteca.h> e quando for incluir um arquivo seu usar "arquivo.h"
+
+	 - NAO EXISTE OBJECT
+     (OBS (eduardo):
+        classe Object, como em Java, não existe em C++ (ou seja, não há uma superclasse da qual todas as outras herdam
+     )
+
+	 - diferente de C, pode-se declarar variaveis em qualquer lugar e nao apenas depois de "{"
+
+	 - Compile vs Build:
+	  .compile: compila apenas o arquivo *.cpp atual transformando em *.obj
+	  .build: compila todos os arquivos *.cpp formando um *.exe
+	ps: um uso disso eh se voce nao quiser passar a sua implementacao para alguem, voce pode compilar o *.cpp (gerando *.obj) e passar o *.obj mais o *.h. 
+	Dessa maneira, quando quem recebeu tais arquivos for compilar todo o programa dará certo.
+
+	Ponteiro de objeto: ->
+	Soh objeto: .
+	Coisas static: Classe::
+    (OBS (eduardo):
+        1) -> (arrow operator (operador de flecha)): utiliza-se para acessar os membros de um objeto ou struct em um ponteiro
+        2) .  (dot operator (operador de ponto)):    utiliza-se para acessar os membros de um objeto ou struct que não estão em um ponteiro
+        3) :: (scope resolution operator (operador de resolução de escopo)): 
+            utiliza-se para acessar um membro de um escopo diferente do atual. Pode ser utilizado para acessar:
+                a) variável ou função contida em um {} diferente de onde se quer utilizá-la
+                b) variável ou função contida em um namespace diferente do atual (exemplo: std::out)
+                c) variável ou função contida em uma classe ou struct (exemplo: Fracao::denominador)
+    )
+
+	Sempre que eh um tipo faz copia (vetor[x] nao)
+	ex: 
+	*ptoFrac = frac; //CLONE
+	 ou
+	return qtd; //qtd eh int
+
+	malloc => free()
+	new => delete
+
+	 -- Leitura e escrita de dados na tela -- by Luca
+	 - cout << "TEXTO" << "MAIS TEXTO" << variavelInt << variavelChar;
+	 - cin >> var >> var2; //a propria variavel e nao o ponteiro
+     (OBS (eduardo):
+         cout e cin são chamados de streams, e representam, em c++, a stream de saída (cout, aquilo que você vê no cmd) e a stream de entrada (cin, aquilo que você escreve no cmd)
+        os operadores << e >> são utilizados para empurrar um valor para uma stream e para recolher o valor de uma string, respectivamente.
+        são iguais aos operados de shift de bits (<< e >>), porém, executam tarefas muito diferentes.
+            (CURIOSIDADE: << e >> são utilizados para gerenciar streams devido à maneira como as streams do sistema UNIX eram feitas)
+     )
+
+-- CLASSES -- by Luca
+
+	 - arquivos e classes: toda classe terá dois arquivos (*.h e *.cpp)
+	   .no arquivo *.h => soh colocar quais sao os metodos (nome, retorno, parametros sem nome) e atributos (nome, tipo) falando se sao private, protected e public
+	   .no arquivo *.cpp => colocar de novo os atributos static (soh esses) + implementacao dos metodos
+	 - objetos em C++ nao sao necessariamente ponteiros
+	 - nao se instancia objetos (nao ha "new"). Basta declarar e pode-se usa
+	ps: quando usar como ponteiro usar "new" e dar "delete obj;" (como um free)
+	ps2: pode-se retornar um objeto que nao eh ponteiro que apesar dele ser destruido ao final do metodo retorna-se-á uma cópia desse objeto
+
+	EXEMPLO:
+	*******************************************************************************************************************************************
+	 -> ARQUIVO fracao.h : ESCREVER QUAIS VARIAVEIS E METODOS EXISTIRAO E QUAL O TIPO, RETORNO E PARAMETROS DELES
+
+	    //#ifndef e #endif eh o que faz nao dar erro se incluir duas vezes a mesma classe
+	    #ifndef FRACAO
+	    #define FRACAO
+	    //escrever as duas coisas maiusculas
+
+	    class Fracao
+	    {
+	       private:
+	          int variavel1;
+	          static char variavel2;
+	          void metodoPrivado(int);   //parametros nao tem nome aqui
+
+	       public:
+	          void metodo();
+	          void metodo2(float, int,...);
+	          static int metodoStatic();
+	    }; //<-- tem que colocar PONTO-E-VIRGULA aqui!!!
+
+	    #endif
+
+	*******************************************************************************************************************************************
+	 -> no arquivo fracao.cpp : AQUI NAO SE COLOCA NADA SOBRE SER PUBLIC, PROTECTED E PRIVATE, NEM SE DECLARA class NomeClasse
+	   //outros includes...
+	   #include "fracao.h"
+
+	   char Fracao.variavel2; //SOH COLOCA AQUI OS ATRIBUTOS STATIC
+
+	   //COLOCA Classe::metodo EM QUALQUER METODO
+	   //porem em metodos static nao pode-se usar this e nos outros pode
+
+	   void Fracao::metodo()
+	   {
+	      ...
+	   }
+
+	   void Fracao::metodo2(float f, int qtd,...) //esse metodo NAO eh static
+	   {
+	      this->variavel1 = 2; //THIS funciona como PONTEIRO!!
+	      Fracao::variavel2 = 2;
+	      ...
+	   }
+
+	   int Fracao::metodoStatic() // esse metodo eh static, nao pode usar this
+	   {
+	       ...
+	   }
+
+
+	  .exemplo de main (soh *.cpp)
+	   #include <iostream.h>
+	   #include "fracao.h"
+
+	   void main()
+	   {
+	      Fracao::metodoStatic(); //eh assim que se usa metodos/variaveis static
+
+
+	      Fracao frac; //frac nao eh um ponteiro, entao jah pode sair usando
+	      frac.metodo(); // quando NAO EH PONTEIRO usa "."
+
+	      Fracao* frac2 = new Fracao();
+	      //frac2 eh ponteiro e estah chamando o construtor (pode-se alocar com malloc e desalocar com free porem dessa maneira nao chamaria o contrutor)
+	      //agora que jah fez "new" o objeto pode ser usado
+	      frac2->metodo(); // quando EH PONTEIRO usa "->"
+	      delete frac2;
+
+
+
+	     //DIFERENCA ENTRE OBJETO SENDO OU NAO PONTEIRO
+	      Fracao* f1 = new Fracao(),
+	              f2 = new Fracao();
+
+	      *f1 = *f2; //COPIA/CLONE
+	      f1->metodo(); //NAO MUDA F2
+
+	      f1 = f2; //NAO EH CLONE
+	      f1->metodo(); //MUDA OS DOIS
+
+	      Fracao f3;
+	      *f1 = f3; // EH CLONE
+
+	      delete f1;
+	      detele f2;
+
+	      f1 = &f3;
+	      // NAO PRECISA DAR DELETE
+	   }
+
+--COISAS GERAIS-- by Francisco
+
+	Em C++, um objeto pode, ou não, ser ponteiros( em java tudo é ponteiro). Se atribuir em um ponteiro, algo que não é ponteiro, dará erro de tipo.
+
+	Os parâmetros com valor padrão, são definidos por último. Se for emitir os parâmetros, é necessário emitir do último ao primeiro, 
+	necessariamente nessa ordem. Não pode ter parâmetros ocultos, se for igual a uma sobrecarga.
+
+	Funções comuns são funções que podem ser feitas dentro da main( estruturada), mas não é uma boa prática de programação, 
+	já que C++ é orientado a objeto. Funções comuns, assim como as estaticas, nao usam o this pois nao se refere a nenhum objeto, já que é o próprio objeto.
+
+	Em C++, dentro de uma classe, pode ter uma função chamada de função amizade, que não é um método, e se implementa 
+	dentro da main com o nome do cabeçalho da classe, e terá as permissões como se fosse da própria classe. amizade sempre é unilateral.
+	Há como declarar amizade também com outra classe, assim não sendo uma função comum.
+
+-- PONTEIROS -- by Luca
+
+	Definições:
+	 - Segmentos: espaço de memória (como linhas) 
+	 - Deslocamento: (como colunas)
+	(Segmento, deslocamento) = (x, y) de uma matriz
+
+	Quando um programa roda, 3 segmentos sao destinados a ele: 
+	 - o segmento de código (onde fica os bytes do código do programa)
+	 - o segmento de dados (onde ficam os variáveis) //ponteiros ou nao
+	 - segmento da pilha (stack e heap: uma das pontas eh a ponta do stack, onde ficam os endereços de retorno e de parâmetros; e na outra ponta mas da mesma linha fica a ponta do heap, onde fica as propria instancias e nao o objeto/ponteiro)
+	ps: quando o ultimo heap chega no ultimo stack e se encontram dá Stack Heap Overflow
+	ps: sobre o segmento de dados: nele ficam as variáveis em si, porém se é criado uma instância de um objeto o [ponteiro dessa instância]=[objeto] fica no segmento de dados mas a instância em si fica no heap
+
+	__PS:__
+	Se um vetor for alocado não dinamicamente, a instância em si fica no segmento de dados (DS: Data Segment): não há um ponteiro apontando pra primeira posição do vetor. Porém ele funciona como um ponteiro no código em si (devolvendo a primeira posicao do vetor se não derreferenciá-lo).
+	Se um vetor for alocado dinamicamente, fica um ponteiro no Segmento de Dados e a própria instância no heap e o vetor realmente um ponteiro.
+	As únicas diferença dos dois é que o vetor alocado não dinamicamente não pode receber outra coisa ou mudar de tamanho e o outro não, e o vetor alocado dinamicamente gasta apenas a memória de um ponteiro em si apontando para a instância de um vetor em outro lugar da memória e o outro gasta a memória do vetor em si imediatamente (não tem um ponteiro para a instância); porém os dois funcionam como ponteiro.
+	ex:
+	int vet1[7]; //VETOR INTEIRO/INSTANCIA FICA NO DATA SEGMENT
+	int *vet2 = (int*)malloc(8*sizeof(int)); //PONTEIRO FICA NO DATA SEGMENT E A INSTANCIA NO HEAP
+
+	Tabela de Símbolos = vetor/lista/matriz de um conjunto com [nome, tipo, endereço]
+	isso fica no compilador, depois de compilar o programa o compilador faz um código compilado no qual não vai existir mais essa tabela nem nomes apenas endereços (apenas um código em binário dizendo: "se ..., acesse endereço tal e mude para x,...")
+
+	Se guarda soh o deslocamento eh porque o segmento eh o segmento destinado ao próprio programa no heap (entao o ponteiro fica mais curto) = (esse ponteiro = near pointer)
+	Se a memória eh muito grande e o sistema operacional decide alocar a memória fora do segmento destinado ao próprio programa, o ponteiro eh mais longo com segmento e deslocamento = (esse ponteiro = far pointer)
+	ps: near pointers e far pointers sao guardados no segmento de dados, mas as instâncias (pra onde o ponteiro aponta) do near pointers estão no heap e do far pointers estão em outro lugar da memória (não na reservada pro programa)
+
+
+	ps: tudo isso serve apenas para ibm pcs compativeis (qualquer computador que não é Mac)
+
+-- PARAMETROS COM VALORES PADRAO -- by Luca
+
+	 > exemplo:
+
+	void funcao(int a, char c = 'x', int i = 3, int qtd = 5) //primeiro os parametros sem valores padrao, e depois todos os com valores padrao
+	{
+	   ...
+	}
+
+	 > na hora de usar:
+
+	funcao(3, 'a', 5, 1); //sem omitir nada
+	funcao(1, 'b'); //omitiu os 2 ultimos [parametros com valores padrao]
+	funcao(1); //omitiu todos [parametros com valores padrao]
+
+	OBS:
+	 - na declaracao, todos os parametros com valores padrao devem estar no final (primeiro os parametros sem )
+	 - na declaracao do ".h" declara-se como se todos fossem parametros normais e soh no ".cpp" coloca os valores padrao
+	 - quando for usar essas funcoes, os parametros tem que estar na ordem e quando decidir omitir tem que omitir todos os parametros subsequentes 
+	 (ex: se omite o terceiro parametro, tem que omitir todos os seguintes: quarto,quinto,...)
+	 - lembra sobrecarga ("overload"/metodos com nomes iguais) mas nao eh igual (em C++ tem sobrecarga). ps: nao pode deixar duas funcoes de mesmo nome 
+	 que sao ambiguas (ex: funcao MET com parametro int e funcao MET com parametro int + parametros omissiveis)
+
+-- FUNÇÃO COMUM -- by Sacaia && Rorraz
+
+ 	não tem this, nao se refere(faz parte) a(de) nenhum objeto. Função fora de classe {n é boa pratica, pois senão usariamos C}
+	Só podem acessar oq é public, a n ser que possuam AMIZADE.
+
+ -- AMIZADE -- by Visual && Sacaia
+
+ 	friend nao é metodo
+
+	para usar friend de um metodo de outra classe
+	ex: friend Fracao Fracao::Soma (int, Fracao);
+	pra ser friend de outra classe
+	ex: friend class Fracao
+	amizade é unilateral
+	é ruim pq acaba c encapsulamento e OO
+
+	friend retorno funcao (parametros...)
+
+	// transforma em funcao comum e pode usar os metodos e atributos nao publicos das classes às quais possui amizade
+	// no .h
+
+ 	friend retorno NomeDaClasse::funcao (parametros...) // para quando o metodo é de outra classe
+
+ --LINKEDIÇÃO-- by Francisco && Visual
+
+	Erro de linkedição não é um erro de compilação nem de execução, é um erro onde a programa( .exe) 
+	não encontra os métodos solicitados pelo programa, ou encontra duplicado.
+	A Build gera objeto relocavel de todo arquivo e linkedita os arquivos compile que gera objeto relocavel apenas do atual. 
+	A linkedicao junta todos os objetos e evita duplicidade/falta de arquivos
+
+-- FUNÇÃO INLINE -- by Minoru, Sacaia e Rorraz
+
+	É uma macro que quando chamada, o código da função será "printado" no local da chamada. Programada no .h
+
+	 ou no cpp usando a palavra inline na declaracao(.h). Processada mais rapidamente
+
+-- SOBRECARGA DE OPERADORES -- by Minoru && Francisco
+
+	Tal função pode ser definida como membro, caso em que seu operando mais a esquerda representa o objeto ao qual ela 
+	se vincula, ao passo que, todos os demais lhe são passados com argumentos (S1 + S2 seria equivalente a S1.operator+ (S2)).
+
+	Tal função pode também ser definida como uma função comum, caso em que todos os seus operandos lhe são passados como 
+	argumentos (S1 + S2 seria equivalente a operator+ (S1, S2)).
+
+	EX (ESQUISITO): operador cast
+	float Fracao::operator Float()
+	{
+		return this->numerador/this.denominador;
+	}
+
+	Quando se faz Funcao a = b; estamos simplesmente fazendo o ponteiro de a apontar para a mesma coisa que b aponta
+	Se quisessemos copiar apenas o conteudo, deveriamos fazer um operator construtor de copias
+	E no caso de a=b; e quisessemos que fosse copiado o conteudo, deveriamos fazer um operator =, deixando do jeito que queremos
+
+	CONSTRUTOR
+	NomeDaClasse () {}
+	DESTRUTOR
+	~NomeDaClasse () {}
+
+	PARAMETROS
+	qro alterar parametro? S
+	qro q alteração se reflita la fora? S
+	USO: parametro por referenciação (ponteiro)
+
+	qro alterar parametro? S
+	qro q alteração se reflita la fora? n
+	USO: parametro por valor(*Parametro)
+
+	qro alterar parametro? n                                                  Ex: pagina 144
+	qro q alteração se reflita la fora? n
+	USO: parametro por apelido (apelido como constante)
+	Ex: Lista (const Lista& nomeParametro); //Lista com esse "&" significa que você está usando um apelido, ou seja, é quase a mesma coisa que um ponteiro
+				  //const, constante -> imutavel								
+
+	FUNÇÕES E MÉTODOS
+
+	no corpo do código, na .cpp, oq estiver com NomeDaClasse:: será método da função
+	oq não estiver com esse negócio será função comum
+
+	F1 = F2.operator*(F3);
+	F1 = F2 * F3;
+
+	float Fracao::operator float ()
+	{
+		return this->numerador/this->denominador;
+	}
+
+	So usar funcao comum se o primeiro operando nao for um objeto.
+
+	Apelido:
+
+	Lista& operator= (const Lista&)
+
+	O & serve para definir um apelido ao parametro dado, sendo assim nao passando a copia do objeto.
+
+
+Fim. Boa prova, boa sorte e bom fim de ano para todo mundo! - by Poff
+
+
