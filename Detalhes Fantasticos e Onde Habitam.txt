@@ -281,6 +281,13 @@
 		return this->numerador/this.denominador;
 	}
 
+-- OPERADORS QUE PODEM SER SOBRECARREGADOS (Eduardo)
+	+	-	*	⁄	%	‸	&	|	~
+	!	=	<	>	+=	-=	*=	⁄=	%=
+	‸=	&=	|=	<<	>>	<<=	>>=	==	!=
+	<=	>=	&&	||	++	--	,	->*	->
+	( )	[ ]	new	delete	new[]	delete[]	 	 	 
+
 	Quando se faz Funcao a = b; estamos simplesmente fazendo o ponteiro de a apontar para a mesma coisa que b aponta
 	Se quisessemos copiar apenas o conteudo, deveriamos fazer um operator construtor de copias
 	E no caso de a=b; e quisessemos que fosse copiado o conteudo, deveriamos fazer um operator =, deixando do jeito que queremos
